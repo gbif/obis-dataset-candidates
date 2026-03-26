@@ -26,3 +26,5 @@ WORMS/
 # OS specific
 .DS_Store
 Thumbs.db
+
+.history/

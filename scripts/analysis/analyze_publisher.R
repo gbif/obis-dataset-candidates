@@ -5,7 +5,7 @@ library(dplyr)
 library(readr)
 
 # Read the filtered candidates
-filtered_candidates <- read_tsv("../../data/gbif_candidates_filtered.tsv", show_col_types = FALSE)
+filtered_candidates <- read_tsv("../../exports/obis_candidates_filtered.tsv", show_col_types = FALSE)
 
 # UAR PatriNat publisher key
 publisher_key <- "1928bdf0-f5d2-11dc-8c12-b8a03c50a862"

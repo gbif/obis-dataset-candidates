@@ -147,12 +147,14 @@ find_candidates <- function() {
       # 1. Dataset key in network_constituents
       # 2. OBIS network UUID in networkKeys field
       # 3. Publishing organization is an OBIS network organization
+      # 4. Exclude PANGAEA datasets
       candidates <- result %>%
         filter(!(key %in% obis_keys)) %>%
         filter(!(key %in% unique_keys)) %>%  # Avoid duplicates
         rowwise() %>%
         filter(!grepl(obis_network_uuid, networkKeys %||% "", fixed = TRUE)) %>%
         filter(!(publishingOrganizationKey %in% obis_org_keys)) %>%
+        filter(publishingOrganizationKey != "d5778510-eb28-11da-8629-b8a03c50a862") %>%  # Exclude PANGAEA
         ungroup()
       
       if (nrow(candidates) > 0) {

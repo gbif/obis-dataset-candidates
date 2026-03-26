@@ -7,7 +7,7 @@ library(tidyr)
 library(stringr)
 
 # Read the filtered candidates
-filtered_candidates <- read_tsv("../../data/gbif_candidates_filtered.tsv", show_col_types = FALSE)
+filtered_candidates <- read_tsv("../../exports/obis_candidates_filtered.tsv", show_col_types = FALSE)
 
 cat("=" %>% rep(70) %>% paste0(collapse = ""), "\n")
 cat("GBIF Dataset Candidates Summary Statistics\n")
