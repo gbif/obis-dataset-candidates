@@ -10,11 +10,11 @@ This project scans GBIF for datasets that should potentially be included in the 
 
 The filtered candidate datasets are saved to:
 
-📁 **`exports/obis_candidates_filtered.tsv`** - Final list of GBIF datasets recommended for OBIS inclusion
+📁 **[exports/obis_candidates_filtered.tsv](exports/obis_candidates_filtered.tsv)** - Final list of GBIF datasets recommended for OBIS inclusion
 
 Additional intermediate files:
-- `data/gbif_candidates.tsv` - All marine keyword matches from GBIF
-- `data/percentage_worms.tsv` - WORMS coverage calculations for each dataset
+- [data/gbif_candidates.tsv](data/gbif_candidates.tsv) - All marine keyword matches from GBIF
+- [data/percentage_worms.tsv](data/percentage_worms.tsv) - WORMS coverage calculations for each dataset
 
 ## Selection Criteria
 
