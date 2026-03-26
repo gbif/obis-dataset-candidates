@@ -1,0 +1,69 @@
+name: Update OBIS Candidates
+
+on:
+  schedule:
+    # Run at 00:00 UTC on the 1st of every month
+    - cron: '0 0 1 * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-candidates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.0'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+      
+      - name: Cache R packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ hashFiles('**/DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-r-
+      
+      - name: Install R dependencies
+        run: |
+          Rscript -e 'install.packages(c("rgbif", "dplyr", "readr", "tidyr", "stringr", "tidytext", "rlang", "jsonlite"), repos="https://cloud.r-project.org")'
+      
+      - name: Create exports directory
+        run: mkdir -p exports
+      
+      - name: Run OBIS candidates workflow
+        run: bash run.sh
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet data/ exports/ || echo "changes=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push results
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/gbif_candidates.tsv data/percentage_worms.tsv exports/obis_candidates_filtered.tsv
+          git commit -m "Update OBIS candidates - $(date +'%Y-%m-%d')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: obis-candidates-${{ github.run_number }}
+          path: |
+            exports/obis_candidates_filtered.tsv
+            data/gbif_candidates.tsv
+            data/percentage_worms.tsv
+          retention-days: 90
